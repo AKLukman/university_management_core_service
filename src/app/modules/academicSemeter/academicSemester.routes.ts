@@ -1,6 +1,6 @@
 import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
-import { AcademicSemesterController } from './academicSemester.controller';
+import { AcademicSemeterController } from './academicSemester.controller';
 import { AcademicSemesterValidation } from './academicSemester.validation';
 
 const router = express.Router();
@@ -8,8 +8,9 @@ const router = express.Router();
 router.post(
   '/create-academic-semester',
   validateRequest(AcademicSemesterValidation.createZodSchema),
-  AcademicSemesterController.createAcademicSemester
+  AcademicSemeterController.insertIntoDB
 );
-router.get('/', AcademicSemesterController.getAllAcademicSemesters);
+router.get('/', AcademicSemeterController.getAllFromDB);
+router.get('/:id', AcademicSemeterController.getDataById);
 
 export const AcademicSemesterRoutes = router;

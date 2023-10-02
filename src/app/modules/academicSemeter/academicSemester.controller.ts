@@ -4,50 +4,45 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
+import { AcademicSemesterFilterAbleFileds } from './academicSemester.constant';
 import { AcademicSemesterService } from './academicSemester.service';
 
-const createAcademicSemester = catchAsync(
-  async (req: Request, res: Response) => {
-    const result = await AcademicSemesterService.createAcademicSemester(
-      req.body
-    );
-    return sendResponse<AcademicSemester>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Academic Semester created',
-      data: result,
-    });
-  }
-);
+const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+  const result = await AcademicSemesterService.insertIntoDB(req.body);
+  sendResponse<AcademicSemester>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Academic Semster Created!!',
+    data: result,
+  });
+});
 
-const getAllAcademicSemesters = catchAsync(
-  async (req: Request, res: Response) => {
-    // console.log(req.query);
-    const filters = pick(req.query, [
-      'searchTerm',
-      'code',
-      'year',
-      'startMonth',
-      'endMonth',
-    ]);
-    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
-    // console.log('Filtrs ', filters);
-    // console.log('Options ', options);
-    const result = await AcademicSemesterService.getAllAcademicSemesters(
-      filters,
-      options
-    );
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Academic Semester data fatched !!',
-      meta: result.meta,
-      data: result.data,
-    });
-  }
-);
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, AcademicSemesterFilterAbleFileds);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
-export const AcademicSemesterController = {
-  createAcademicSemester,
-  getAllAcademicSemesters,
+  const result = await AcademicSemesterService.getAllFromDB(filters, options);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Academic Semster data fetched!!',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getDataById = catchAsync(async (req: Request, res: Response) => {
+  const result = await AcademicSemesterService.getDataById(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Academic Semster data fetched!!',
+    data: result,
+  });
+});
+
+export const AcademicSemeterController = {
+  insertIntoDB,
+  getAllFromDB,
+  getDataById,
 };
